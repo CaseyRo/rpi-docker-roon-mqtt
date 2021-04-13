@@ -1,0 +1,17 @@
+# so this works on docker compose, docker stack/swarm is still a WIP.
+version: "3.8"
+
+services:
+  roon_mqtt:
+    container_name: roon_mqtt
+    network_mode: host
+    restart: unless-stopped
+    image: keesromkes/docker-roon-mqtt-arm32v7:latest #replace with other image if needed
+    volumes:
+      - ./config.json:/usr/src/app/config.json
+    deploy: #not functional since it relies on discovery protocol, needs some time and host networking for instance
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.music == true]
+        max_replicas_per_node: 1
